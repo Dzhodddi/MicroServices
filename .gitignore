@@ -1,0 +1,8 @@
+/user-info/.env
+/user-info/node_modules/
+/gateway/.env
+/auth/.env
+.idea
+/user-info/node_modules
+/*/tmp/
+*.js

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "common/api";
+
+package api;
+
+service AuthService {
+  rpc ValidateToken(Token) returns (TokenResponse);
+}
+
+message Token {
+  string token = 1;
+}
+
+message TokenResponse {
+  bool expired = 1;
+  string created_at = 2;
+  string expired_at = 3;
+}
