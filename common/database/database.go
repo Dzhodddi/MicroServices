@@ -11,6 +11,7 @@ import (
 var (
 	QueryTimeOut      = 5 * time.Second
 	ErrDuplicateEmail = errors.New("duplicate email")
+	NotFound          = errors.New("not found")
 )
 
 func New(addr string, maxOpenConnections, maxIdleConnections int, maxIdleTime string) (*sql.DB, error) {

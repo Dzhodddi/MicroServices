@@ -1,7 +1,6 @@
 package main
 
 import (
-	"commons"
 	pb "commons/api"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/labstack/echo/v4"
@@ -10,11 +9,12 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net/http"
+	"os"
 )
 
 var (
-	httpAddr        = commons.EnvString("HTTP_ADDR", ":3000")
-	authServiceAddr = "localhost:2000"
+	httpAddr        = os.Getenv("HTTP_ADDR")
+	authServiceAddr = os.Getenv("AUTH_SERVICE_ADDR")
 )
 
 func main() {
@@ -33,9 +33,11 @@ func main() {
 	client := pb.NewAuthServiceClient(conn)
 	handler := NewHandler(client)
 	srv := echo.New()
-	srv.Use(middleware.Logger())
 	srv.Use(middleware.Recover())
-	srv.POST("/api/token/:token", handler.ValidateToken)
+	srv.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "${time_rfc3339} [${status}] ${method} ${path} ${latency_human}\n",
+	}))
+	srv.POST("/api/token", handler.ValidateToken)
 	log.Println("Starting server on: ", httpAddr)
 
 	if err = http.ListenAndServe(httpAddr, srv); err != nil {

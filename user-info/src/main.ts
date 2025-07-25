@@ -1,4 +1,4 @@
-import {buildServer} from "./utils/server";
+import {buildServer} from "./server";
 import {logger} from "./utils/logger";
 import {getEnvInt} from "./env";
 
@@ -9,6 +9,8 @@ async function gracefulShutdown({app}: {app: Awaited<ReturnType<typeof buildServ
 
 async function main() {
     const app = await buildServer()
+    await app.ready()
+    app.swagger()
     await app.listen({
         port: port,
     })
@@ -16,6 +18,7 @@ async function main() {
     for (const signal of signals) {
         process.on(signal, () => gracefulShutdown({app}))
     }
+
     logger.info(`server is running on port ${port}`)
 }
 

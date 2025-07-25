@@ -9,4 +9,6 @@ var (
 	ViolatePK              = fmt.Errorf("user with this credantionals already exists")
 	EstablishingConnection = fmt.Errorf("error during connection")
 	QueueDeclareError      = fmt.Errorf("error declaring queue")
+	NotFoundError          = fmt.Errorf("resource not found")
+	InvalidToken           = fmt.Errorf("invalid token")
 )

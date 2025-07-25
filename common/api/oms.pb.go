@@ -21,62 +21,18 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Token struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Token) Reset() {
-	*x = Token{}
-	mi := &file_api_oms_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Token) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Token) ProtoMessage() {}
-
-func (x *Token) ProtoReflect() protoreflect.Message {
-	mi := &file_api_oms_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Token.ProtoReflect.Descriptor instead.
-func (*Token) Descriptor() ([]byte, []int) {
-	return file_api_oms_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *Token) GetToken() string {
-	if x != nil {
-		return x.Token
-	}
-	return ""
-}
-
 type TokenResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Expired       bool                   `protobuf:"varint,1,opt,name=expired,proto3" json:"expired,omitempty"`
-	CreatedAt     string                 `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	ExpiredAt     string                 `protobuf:"bytes,3,opt,name=expired_at,json=expiredAt,proto3" json:"expired_at,omitempty"`
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	Ttl           int64                  `protobuf:"varint,3,opt,name=ttl,proto3" json:"ttl,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *TokenResponse) Reset() {
 	*x = TokenResponse{}
-	mi := &file_api_oms_proto_msgTypes[1]
+	mi := &file_api_oms_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -88,7 +44,7 @@ func (x *TokenResponse) String() string {
 func (*TokenResponse) ProtoMessage() {}
 
 func (x *TokenResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_oms_proto_msgTypes[1]
+	mi := &file_api_oms_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -101,7 +57,7 @@ func (x *TokenResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TokenResponse.ProtoReflect.Descriptor instead.
 func (*TokenResponse) Descriptor() ([]byte, []int) {
-	return file_api_oms_proto_rawDescGZIP(), []int{1}
+	return file_api_oms_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *TokenResponse) GetExpired() bool {
@@ -111,36 +67,114 @@ func (x *TokenResponse) GetExpired() bool {
 	return false
 }
 
-func (x *TokenResponse) GetCreatedAt() string {
+func (x *TokenResponse) GetEmail() string {
 	if x != nil {
-		return x.CreatedAt
+		return x.Email
 	}
 	return ""
 }
 
-func (x *TokenResponse) GetExpiredAt() string {
+func (x *TokenResponse) GetTtl() int64 {
 	if x != nil {
-		return x.ExpiredAt
+		return x.Ttl
+	}
+	return 0
+}
+
+type TokenRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TokenRequest) Reset() {
+	*x = TokenRequest{}
+	mi := &file_api_oms_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TokenRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TokenRequest) ProtoMessage() {}
+
+func (x *TokenRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_oms_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TokenRequest.ProtoReflect.Descriptor instead.
+func (*TokenRequest) Descriptor() ([]byte, []int) {
+	return file_api_oms_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *TokenRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
 	}
 	return ""
+}
+
+type Empty struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Empty) Reset() {
+	*x = Empty{}
+	mi := &file_api_oms_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Empty) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Empty) ProtoMessage() {}
+
+func (x *Empty) ProtoReflect() protoreflect.Message {
+	mi := &file_api_oms_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Empty.ProtoReflect.Descriptor instead.
+func (*Empty) Descriptor() ([]byte, []int) {
+	return file_api_oms_proto_rawDescGZIP(), []int{2}
 }
 
 var File_api_oms_proto protoreflect.FileDescriptor
 
 const file_api_oms_proto_rawDesc = "" +
 	"\n" +
-	"\rapi/oms.proto\x12\x03api\"\x1d\n" +
-	"\x05Token\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token\"g\n" +
+	"\rapi/oms.proto\x12\x03api\"Q\n" +
 	"\rTokenResponse\x12\x18\n" +
-	"\aexpired\x18\x01 \x01(\bR\aexpired\x12\x1d\n" +
-	"\n" +
-	"created_at\x18\x02 \x01(\tR\tcreatedAt\x12\x1d\n" +
-	"\n" +
-	"expired_at\x18\x03 \x01(\tR\texpiredAt2>\n" +
-	"\vAuthService\x12/\n" +
-	"\rValidateToken\x12\n" +
-	".api.Token\x1a\x12.api.TokenResponseB\fZ\n" +
+	"\aexpired\x18\x01 \x01(\bR\aexpired\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12\x10\n" +
+	"\x03ttl\x18\x03 \x01(\x03R\x03ttl\"$\n" +
+	"\fTokenRequest\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\"\a\n" +
+	"\x05Empty2E\n" +
+	"\vAuthService\x126\n" +
+	"\rValidateToken\x12\x11.api.TokenRequest\x1a\x12.api.TokenResponseB\fZ\n" +
 	"common/apib\x06proto3"
 
 var (
@@ -155,14 +189,15 @@ func file_api_oms_proto_rawDescGZIP() []byte {
 	return file_api_oms_proto_rawDescData
 }
 
-var file_api_oms_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_api_oms_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_api_oms_proto_goTypes = []any{
-	(*Token)(nil),         // 0: api.Token
-	(*TokenResponse)(nil), // 1: api.TokenResponse
+	(*TokenResponse)(nil), // 0: api.TokenResponse
+	(*TokenRequest)(nil),  // 1: api.TokenRequest
+	(*Empty)(nil),         // 2: api.Empty
 }
 var file_api_oms_proto_depIdxs = []int32{
-	0, // 0: api.AuthService.ValidateToken:input_type -> api.Token
-	1, // 1: api.AuthService.ValidateToken:output_type -> api.TokenResponse
+	1, // 0: api.AuthService.ValidateToken:input_type -> api.TokenRequest
+	0, // 1: api.AuthService.ValidateToken:output_type -> api.TokenResponse
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -181,7 +216,7 @@ func file_api_oms_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_oms_proto_rawDesc), len(file_api_oms_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
