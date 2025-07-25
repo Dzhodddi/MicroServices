@@ -1,26 +1,45 @@
 package main
 
 import (
+	"auth/docs"
 	"auth/internal/repository"
 	"auth/internal/service"
-	"commons"
 	"commons/broker"
 	commonDB "commons/database"
+	"commons/redis"
+	"fmt"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"os"
 	"sync"
 	"time"
 )
 
 var (
-	grpcAddr = commons.EnvString("GRPC_ADDR", "localhost:2000")
-	httpAddr = commons.EnvString("HTTP_ADDR", "localhost:3000")
-	version  = "0.0.1"
-	env      = commons.EnvString("ENV", "development")
+	grpcAddr   = ""
+	httpAddr   = ""
+	version    = "0.0.1"
+	env        = ""
+	dbAddr     = ""
+	brokerAddr = ""
+	apiUrl     = ""
+	redisAddr  = ""
 )
+
+func init() {
+	_ = godotenv.Load()
+	grpcAddr = os.Getenv("GRPC_ADDR")
+	httpAddr = os.Getenv("HTTP_ADDR")
+	env = os.Getenv("ENV")
+	dbAddr = os.Getenv("DB_ADDR")
+	brokerAddr = os.Getenv("BROKER_ADDR")
+	apiUrl = os.Getenv("API_URL")
+	redisAddr = os.Getenv("REDIS_ADDR")
+}
 
 //	@title			Auth microserver
 //	@description	API for auth
@@ -37,38 +56,50 @@ var (
 // @BasePath		/v1
 //
 // @description	Auth microserver
-var dbAddr = commons.EnvString("DB_ADDR", "")
-var brokerAddr = commons.EnvString("BROKER_ADDR", "")
-
 func main() {
+	grpcAddr = os.Getenv("GRPC_ADDR")
+	httpAddr = os.Getenv("HTTP_ADDR")
+	version = "0.0.1"
+	env = os.Getenv("ENV")
+	dbAddr = os.Getenv("DB_ADDR")
+	brokerAddr = os.Getenv("BROKER_ADDR")
+
+	redisConnection := redis.NewRedisClient(redisAddr, "", 0)
+
+	database, err := commonDB.New(dbAddr, 5, 5, "15m")
+	if err != nil {
+		log.Fatalf("failed to connect to postgres: %v", err)
+	}
+
+	brokerConnection, err := broker.New(brokerAddr)
+	if err != nil {
+		log.Fatalf("failed to connect to broker: %v", err)
+	}
+	store := repository.NewStorage(database)
+
+	services := service.NewService(&store, brokerConnection, redisConnection)
+
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
 		// http handlers
-		database, err := commonDB.New(dbAddr, 5, 5, "15m")
-		if err != nil {
-			log.Fatalf("failed to connect to postgres: %v", err)
-		}
-
-		brokerConnection, err := broker.New(brokerAddr)
-		if err != nil {
-			log.Fatalf("failed to connect to broker: %v", err)
-		}
-		store := repository.NewStorage(database)
-
-		services := service.NewService(&store, brokerConnection)
 
 		srv := handler{service: services, server: echo.New()}
+		docs.SwaggerInfo.Version = version
+		docs.SwaggerInfo.Host = fmt.Sprint(apiUrl, httpAddr)
+		docs.SwaggerInfo.BasePath = "/v1"
 		srv.mount()
 
 		srv.server.Use(middleware.TimeoutWithConfig(middleware.TimeoutConfig{
 			Timeout: 5 * time.Second,
 		}))
-		srv.server.Use(middleware.Logger())
+
 		srv.server.Use(middleware.Recover())
 		srv.server.Use(middleware.CORSWithConfig(middleware.CORSConfig{}))
-
+		srv.server.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+			Format: "${time_rfc3339} [${status}] ${method} ${path} ${latency_human}\n",
+		}))
 		log.Println("Listening http server on:", httpAddr)
 
 		if err = srv.server.Start(httpAddr); err != nil {
@@ -90,8 +121,9 @@ func main() {
 				log.Fatalf("failed to close listener: %v", err)
 			}
 		}(listener)
+
 		grpcServer := grpc.NewServer()
-		NewGrpcHandler(grpcServer)
+		NewGrpcHandler(grpcServer, redisConnection)
 
 		log.Println("Listening grpc server on:", grpcAddr)
 		if err = grpcServer.Serve(listener); err != nil {

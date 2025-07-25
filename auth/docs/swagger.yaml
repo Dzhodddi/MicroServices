@@ -1,0 +1,169 @@
+basePath: /v1
+definitions:
+  shared.LoginUser:
+    properties:
+      email:
+        maxLength: 32
+        minLength: 4
+        type: string
+      password:
+        maxLength: 32
+        minLength: 8
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  shared.RegisterNewUser:
+    properties:
+      email:
+        maxLength: 32
+        minLength: 4
+        type: string
+      password:
+        maxLength: 32
+        minLength: 8
+        type: string
+      username:
+        maxLength: 32
+        minLength: 4
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  shared.User:
+    properties:
+      createdAt:
+        type: string
+      email:
+        maxLength: 32
+        minLength: 4
+        type: string
+      isActive:
+        type: boolean
+      role_id:
+        type: integer
+      username:
+        maxLength: 32
+        minLength: 4
+        type: string
+    required:
+    - email
+    - username
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Auth microserver
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Auth microserver
+paths:
+  /auth/activate:
+    get:
+      consumes:
+      - application/json
+      description: activate new user via email and html page
+      parameters:
+      - description: Invitation token
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - text/html
+      responses:
+        "201":
+          description: User activated
+        "400":
+          description: Bad Request
+          schema: {}
+        "422":
+          description: Unprocessable Entity
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: activate new user
+      tags:
+      - auth
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user with payload as struct RegisterNewUser
+      parameters:
+      - description: User credentials
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/shared.LoginUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User log in successfully
+          schema:
+            $ref: '#/definitions/shared.User'
+        "422":
+          description: Unprocessable Entity
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Login user
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register new user with payload as struct RegisterNewUser
+      parameters:
+      - description: User credentials
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/shared.RegisterNewUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User registered
+          schema:
+            $ref: '#/definitions/shared.User'
+        "400":
+          description: Bad Request
+          schema: {}
+        "422":
+          description: Unprocessable Entity
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Register new user
+      tags:
+      - auth
+  /health:
+    get:
+      description: Health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Health check
+      tags:
+      - health
+swagger: "2.0"

@@ -4,6 +4,6 @@ CREATE TABLE IF NOT EXISTS users (
     email varchar(255) not null unique,
     password text not null,
     created_at timestamp(0) with time zone not null default now(),
-    role_id int2 not null,
-    is_active boolean
+    role_id int2 not null default 1,
+    is_active boolean default false
 )
